@@ -1,0 +1,2 @@
+n,m,p,converged_count,non_converged_count,phi_initial_mean,phi_initial_std,phi_final_mean,phi_final_std,largest_cluster_frac_mean,largest_cluster_frac_std,mean_pair_agreement_mean,mean_pair_agreement_std,convergence_rate,cycle_length_distribution
+3,3,0.5,3,7,5.0,2.7202941017470885,3.6,2.8000000000000003,0.7666666666666667,0.1527525231651947,0.3,0.45825756949558394,0.3,"{""2"": 7}"
