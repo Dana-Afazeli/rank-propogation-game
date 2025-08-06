@@ -1,0 +1,100 @@
+{
+  "Q1": {
+    "answer": "All asynchronous runs converged to fixed points.",
+    "reasoning": "We examined all 18000 asynchronous simulation runs across all parameter combinations. Every single run reached a stable equilibrium where no agent could benefit from changing their ranking.",
+    "data_source": "Convergence flags from all async simulation runs",
+    "implications": "Asynchronous updating provides a completely reliable mechanism for reaching consensus, with zero risk of cycles."
+  },
+  "Q2": {
+    "answer": {
+      "p=0.05": {
+        "scaling_exponent": 1.174,
+        "r_squared": 0.847,
+        "interpretation": "T_stop ~ n^1.17"
+      },
+      "p=0.1": {
+        "scaling_exponent": 0.923,
+        "r_squared": 0.831,
+        "interpretation": "T_stop ~ n^0.92"
+      },
+      "p=0.2": {
+        "scaling_exponent": 0.906,
+        "r_squared": 0.896,
+        "interpretation": "T_stop ~ n^0.91"
+      },
+      "p=0.3": {
+        "scaling_exponent": 0.978,
+        "r_squared": 0.912,
+        "interpretation": "T_stop ~ n^0.98"
+      },
+      "p=0.5": {
+        "scaling_exponent": 1.134,
+        "r_squared": 0.94,
+        "interpretation": "T_stop ~ n^1.13"
+      },
+      "p=0.7": {
+        "scaling_exponent": 1.185,
+        "r_squared": 0.945,
+        "interpretation": "T_stop ~ n^1.19"
+      }
+    },
+    "reasoning": "Log-log regression reveals how convergence time scales with network size. Different densities show different scaling behaviors, with α values revealing computational complexity.",
+    "data_source": "Convergence times and network sizes from async simulations",
+    "implications": "Values near α=1 suggest linear scaling (manageable), while α>1.5 indicates superlinear growth that could become prohibitive for large networks."
+  },
+  "Q3": {
+    "answer": "35 parameter combinations showed <50% convergence",
+    "reasoning": "Analyzed convergence rates across 150 parameter combinations. 35 showed fragility.",
+    "data_source": "Convergence rates by (n,m,p) from sync simulations",
+    "implications": "Fragile regimes identify conditions where synchronous updating is unreliable, typically in sparse or complex networks."
+  },
+  "Q4": {
+    "answer": {
+      "min": 2,
+      "median": 2.0,
+      "pct95": 2.0,
+      "max": 2,
+      "n_cycles": 4486
+    },
+    "reasoning": "Analyzed 4486 non-converged runs out of 18000 total sync runs.",
+    "data_source": "Cycle lengths from non-converged sync simulations",
+    "implications": "Short cycles indicate simple oscillations rather than complex periodic behavior."
+  },
+  "Q5": {
+    "answer": {
+      "async": 0.956,
+      "sync": 0.939
+    },
+    "reasoning": "Async achieved 0.956 average consensus, sync achieved 0.939.",
+    "data_source": "Consensus fractions from all simulations",
+    "implications": "Higher async consensus suggests that self-paced updating leads to better coordination than simultaneous updates."
+  },
+  "Q6": {
+    "answer": {
+      "correlation": 0.423,
+      "p_value": 0.0
+    },
+    "reasoning": "Pearson correlation between disagreement components and consensus across 36000 simulations.",
+    "data_source": "Disagreement components and consensus fractions",
+    "implications": "Reveals whether network fragmentation patterns predict consensus outcomes."
+  },
+  "Q7": {
+    "answer": {
+      "correlation": 0.014,
+      "p_value": 0.0073
+    },
+    "reasoning": "Correlation between consensus and ranking distortion across 36000 simulations.",
+    "data_source": "Consensus fractions and Footrule shifts",
+    "implications": "Negative correlation indicates efficient consensus with minimal preference changes. Positive suggests consensus requires significant adjustment."
+  },
+  "Q8": {
+    "answer": {
+      "overall": 0.533,
+      "async": 0.559,
+      "sync": 0.506
+    },
+    "reasoning": "Overall 53.3% of runs changed plurality winner. Async: 55.9%, Sync: 50.6%.",
+    "data_source": "Winner-flip indicators from all simulations",
+    "implications": "High flip rates indicate dynamics significantly alter initial preferences rather than just organizing existing consensus."
+  }
+}

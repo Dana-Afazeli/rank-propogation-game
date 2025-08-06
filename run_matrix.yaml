@@ -1,0 +1,9 @@
+# run_matrix.yaml  —  version 2025-08-06
+n:      [20, 50, 100, 150, 200]           # number of agents
+m:      [5, 8, 10, 12, 15]                # items per ranking
+p:      [0.05, 0.10, 0.20, 0.30, 0.50, 0.70]  # ER edge probability
+mode:   [async, sync]                     # update schedule
+reps:   120                               # repetitions per grid-point
+base_seed: 20250806                       # reproducible seeds
+max_steps_sync: "4*n*(m-1)"               # upper bound for cycle detection
+max_steps_async: "inf"                    # run until fix-point

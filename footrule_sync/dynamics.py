@@ -130,3 +130,91 @@ def run_sync_dynamics(
         "cycle_length": cycle_length,
         "steps_run": steps_run,
     }
+
+
+def run_async_dynamics(
+    graph: nx.Graph,
+    initial_perms: np.ndarray,
+    *,
+    max_steps: int = float('inf'),
+    self_inclusive: bool = False,
+    rng: np.random.Generator = None,
+) -> Dict:
+    if rng is None:
+        rng = np.random.default_rng()
+    
+    perms = np.array(initial_perms, dtype=int)
+    n, m = perms.shape
+
+    phi_history = [potential(perms, graph)]
+    state = tuple(encode_permutation(perms[i]) for i in range(n))
+    seen = {state: 0}
+    
+    nodes = list(range(n))
+    step_count = 0
+    
+    while step_count < max_steps:
+        # Choose random node to update
+        u = rng.choice(nodes)
+        
+        # Get neighbors and compute new permutation
+        neigh = list(graph.neighbors(u))
+        perms_list = [perms[v] for v in neigh]
+        if self_inclusive or not perms_list:
+            perms_list.append(perms[u])
+        
+        new_perm = footrule_median(perms_list)
+        
+        # Check if this update would change anything
+        if np.array_equal(new_perm, perms[u]):
+            # No change, try another random update
+            step_count += 1
+            continue
+        
+        # Apply the update
+        perms[u] = new_perm
+        step_count += 1
+        
+        # Check for convergence (no beneficial updates possible)
+        converged = True
+        for v in range(n):
+            v_neigh = list(graph.neighbors(v))
+            v_perms_list = [perms[w] for w in v_neigh]
+            if self_inclusive or not v_perms_list:
+                v_perms_list.append(perms[v])
+            v_new_perm = footrule_median(v_perms_list)
+            if not np.array_equal(v_new_perm, perms[v]):
+                converged = False
+                break
+        
+        if converged:
+            break
+        
+        # Check for cycles (async rarely cycles, but we check anyway)
+        state = tuple(encode_permutation(perms[i]) for i in range(n))
+        if state in seen:
+            # Cycle detected (very rare in async)
+            cycle_length = step_count - seen[state]
+            return {
+                "perms": perms,
+                "phi_history": phi_history + [potential(perms, graph)],
+                "converged": False,
+                "cycle_length": cycle_length,
+                "steps_run": step_count,
+            }
+        
+        # Record every 100 steps to avoid memory issues
+        if step_count % 100 == 0:
+            phi_history.append(potential(perms, graph))
+            seen[state] = step_count
+
+    # Add final potential
+    phi_history.append(potential(perms, graph))
+    
+    return {
+        "perms": perms,
+        "phi_history": phi_history,
+        "converged": converged,
+        "cycle_length": 0,
+        "steps_run": step_count,
+    }

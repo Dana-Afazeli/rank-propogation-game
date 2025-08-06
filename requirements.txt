@@ -1,4 +1,8 @@
 numpy
-scipy>=1.11
+scipy>=1.5.0
 networkx
 pandas
+matplotlib
+seaborn
+scikit-learn
+pyyaml
